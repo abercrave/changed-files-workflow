@@ -1,8 +1,18 @@
 #!/bin/bash
 
 WATCHED_DIRECTORY=watched-directory
+BEFORE=$1
+AFTER=$2
 
-for FILE in `git diff --name-only HEAD~1 HEAD`; do 
+if [ "$BEFORE" = "" ]; then
+  BEFORE="HEAD~1"
+fi
+
+if [ "$AFTER" = "" ]; then
+  AFTER="HEAD"
+fi
+
+for FILE in `git diff --name-only ${BEFORE} ${AFTER}`; do 
   if [[ $FILE = ${WATCHED_DIRECTORY}/* ]]; then
     FOUND_WATCHED_FILES=1
     echo $FILE
