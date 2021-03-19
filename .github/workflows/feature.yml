@@ -10,13 +10,41 @@ jobs:
     name: Test Changed Files
     runs-on: ubuntu-latest
 
+    env:
+      WATCHED_DIRECTORY: watched-directory
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Log GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+      
+      - name: Set Variables
+        run: |
+          if [[ ${{ github.event.before }} = 000000* ]]; then
+            BEFORE=origin/main
+          else
+            BEFORE=${{ github.event.before }}
+          fi
+          echo "BEFORE=${BEFORE}" >> $GITHUB_ENV
+      
+      - name: Detect Changed Files
+        run: |
+          echo $(git diff --name-only ${{ env.BEFORE }} ${{ github.event.after }})
+          for FILE in $(git diff --name-only ${{ env.BEFORE }} ${{ github.event.after }}); do 
+            if [[ $FILE = ${WATCHED_DIRECTORY}/* ]]; then
+              echo "FOUND_WATCHED_FILES=1" >> $GITHUB_ENV
+              break
+            fi
+          done
+      
+      - name: Found Changed Files
+        if: "env.FOUND_WATCHED_FILES"
+        run: |
+          echo "Files were changed in the ${{ env.WATCHED_DIRECTORY }}! Do the thing!"
+      
+      - name: No Changed Files
+        if: "!env.FOUND_WATCHED_FILES"
+        run: |
+          echo "No files were changed in the ${{ env.WATCHED_DIRECTORY }}."
+          
