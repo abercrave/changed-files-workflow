@@ -1,0 +1,21 @@
+name: Test Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-changed-files:
+    name: Test Changed Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        fetch-depth: 0
+
+      - name: Log GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
