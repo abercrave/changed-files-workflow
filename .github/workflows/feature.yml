@@ -19,4 +19,9 @@ jobs:
       - name: Log GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        run: |
+          echo "$GITHUB_CONTEXT"
+      
+      - name: List Changed Files
+        run: |
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
