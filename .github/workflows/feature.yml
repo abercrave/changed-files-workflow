@@ -32,7 +32,6 @@ jobs:
       
       - name: Detect Changed Files
         run: |
-          echo $(git diff --name-only ${{ env.BEFORE }} ${{ env.AFTER }})
           for FILE in $(git diff --name-only ${{ env.BEFORE }} ${{ env.AFTER }}); do
             if [[ $FILE = ${{ env.WATCHED_DIRECTORY }}/* ]]; then
               echo "FOUND_WATCHED_FILES=1" >> $GITHUB_ENV
