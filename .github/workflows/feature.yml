@@ -32,7 +32,7 @@ jobs:
       - name: Detect Changed Files
         run: |
           if [[ ${{ github.event.after }} = ${{ github.sha }} ]]; then
-            BEFORE=main
+            BEFORE=refs/heads/main
           else
             BEFORE=${{ github.event.before }}
           fi
