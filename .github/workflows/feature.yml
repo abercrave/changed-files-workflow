@@ -26,13 +26,14 @@ jobs:
           else
             BEFORE=${{ github.event.before }}
           fi
+          AFTER=${{ github.event.after }}
           echo "BEFORE=${BEFORE}" >> $GITHUB_ENV
+          echo "AFTER=${AFTER}" >> $GITHUB_ENV
       
       - name: Detect Changed Files
         run: |
-          echo $(git diff --name-only ${{ env.BEFORE }} ${{ github.event.after }})
-          for FILE in $(git diff --name-only ${{ env.BEFORE }} ${{ github.event.after }}); do 
-            if [[ $FILE = ${WATCHED_DIRECTORY}/* ]]; then
+          for FILE in $(git diff --name-only ${{ env.BEFORE }} ${{ env.AFTER }}); do
+            if [[ $FILE = ${{ env.WATCHED_DIRECTORY }}/* ]]; then
               echo "FOUND_WATCHED_FILES=1" >> $GITHUB_ENV
               break
             fi

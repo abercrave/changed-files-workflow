@@ -10,17 +10,26 @@ jobs:
     name: Test Changed Files
     runs-on: ubuntu-latest
 
+    env:
+      WATCHED_DIRECTORY: watched-directory
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
       
+      - name: Set Variables
+        run: |
+          BEFORE=${{ github.event.before }}
+          AFTER=${{ github.event.after }}
+          echo "BEFORE=${BEFORE}" >> $GITHUB_ENV
+          echo "AFTER=${AFTER}" >> $GITHUB_ENV
+      
       - name: Detect Changed Files
         run: |
-          echo $(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          for FILE in $(git diff --name-only ${{ github.event.before }} ${{ github.event.after }}); do 
-            if [[ $FILE = ${WATCHED_DIRECTORY}/* ]]; then
+          for FILE in $(git diff --name-only ${{ env.BEFORE }} ${{ env.AFTER }}); do
+            if [[ $FILE = ${{ env.WATCHED_DIRECTORY }}/* ]]; then
               echo "FOUND_WATCHED_FILES=1" >> $GITHUB_ENV
               break
             fi
