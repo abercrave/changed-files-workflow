@@ -24,4 +24,4 @@ jobs:
       
       - name: List Changed Files
         run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+          git diff --name-only HEAD~1 HEAD
