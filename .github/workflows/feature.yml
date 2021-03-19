@@ -27,7 +27,7 @@ jobs:
       
       - name: Set Variables
         run: |
-          if [[ ${{ github.event.after }} = ${{ github.sha }} ]]; then
+          if [[ ${{ github.event.before }} = 000000* ]]; then
             BEFORE=origin/main
           else
             BEFORE=${{ github.event.before }}
